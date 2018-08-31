@@ -14,7 +14,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 # Set a timeout so the socket does not block
 # indefinitely when trying to receive data.
-server_address = ('255.255.255.255', 44444)
+server_address = ('', 44444)
 sock.settimeout(0.2)
 sock.bind(server_address)
 
@@ -35,7 +35,8 @@ class qt(QMainWindow):
         # print('sending {!r}'.format(message))
         mesaj = self.textEdit.toPlainText().encode('utf-8')
         # sock.sendto(mesaj, server_address)
-        sock.sendto(mesaj, ('<broadcast>', 37020))
+        port = self.textEdit_2.toPlainText()
+        sock.sendto(mesaj, ('<broadcast>', int(port)))
         # Receive response
         # print('waiting to receive')
         # data, server = sock.recvfrom(4096)

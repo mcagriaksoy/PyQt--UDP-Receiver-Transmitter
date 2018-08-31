@@ -9,12 +9,12 @@ from PyQt5.QtWidgets import QApplication, QMenu, QMainWindow
 from PyQt5.uic import loadUi
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+# sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+
 # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # print('starting up on {} port {}'.format(*server_address))
-server_address = ('255.255.255.255', 37020)
-sock.bind(server_address)
-
 
 
 class Worker(QObject):
@@ -44,6 +44,11 @@ class qt(QMainWindow):
         self.thread = None
         self.worker = None
         self.pushButton.clicked.connect(self.start_loop)
+
+    def on_pushButton_clicked(self):
+        port = self.textEdit_2.toPlainText()
+        server_address = ('<broadcast>', int(port))
+        sock.bind(server_address)
 
     def loop_finished(self):
         self.textEdit.setText("Durduruldu!")
