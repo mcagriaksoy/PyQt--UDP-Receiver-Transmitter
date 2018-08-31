@@ -8,10 +8,13 @@ from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QApplication, QMenu, QMainWindow
 from PyQt5.uic import loadUi
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-server_address = ('localhost', 10000)
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+# sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # print('starting up on {} port {}'.format(*server_address))
+server_address = ('255.255.255.255', 37020)
 sock.bind(server_address)
+
 
 
 class Worker(QObject):
@@ -25,7 +28,7 @@ class Worker(QObject):
 
     def work(self):
         while self.working:
-            data, address = sock.recvfrom(4096)
+            data, address = sock.recvfrom(1024)
             print('received {} bytes from {}'.format(len(data), address))
             # time.sleep(0.05)
             data2 = data.decode('utf-8')
